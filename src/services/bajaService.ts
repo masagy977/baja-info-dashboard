@@ -16,6 +16,9 @@ export interface BajaData {
 }
 
 export async function fetchBajaData(): Promise<BajaData> {
+  const apiKey = process.env.GEMINI_API_KEY || "";
+  const ai = new GoogleGenAI({ apiKey });
+
   const prompt = `Fetch the current data for Baja, Hungary for today (2026-02-28):
   - Current temperature in Celsius
   - Current wind speed in km/h
