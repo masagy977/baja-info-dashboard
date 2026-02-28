@@ -68,14 +68,19 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const loadData = useCallback(async () => {
+const loadData = useCallback(async () => {
     setIsRefreshing(true);
     try {
       const result = await fetchBajaData();
       setData(result);
       setError(null);
-    } catch (err) {
-      setError("Nem sikerült az adatok betöltése. Kérjük, próbálja újra később.");
+    } catch (err: any) {
+      const errorMessage = err?.message || "";
+      if (errorMessage.includes("429") || errorMessage.includes("quota")) {
+        setError("Az ingyenes lekérdezési keret elfogyott. Kérjük, várjon pár percet a frissítés előtt.");
+      } else {
+        setError("Nem sikerült az adatok betöltése. Kérjük, próbálja újra később.");
+      }
     } finally {
       setLoading(false);
       setIsRefreshing(false);
@@ -84,8 +89,8 @@ export default function App() {
 
   useEffect(() => {
     loadData();
-    // Refresh every 15 minutes
-    const interval = setInterval(loadData, 15 * 60 * 1000);
+    // Refresh every 60 minutes to save API quota
+    const interval = setInterval(loadData, 60 * 60 * 1000);
     return () => clearInterval(interval);
   }, [loadData]);
 
