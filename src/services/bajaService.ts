@@ -37,7 +37,7 @@ export async function fetchBajaData(): Promise<BajaData> {
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.5-flash", 
       contents: prompt,
       config: {
         tools: [{ googleSearch: {} }],
@@ -55,3 +55,4 @@ export async function fetchBajaData(): Promise<BajaData> {
     throw error;
   }
 }
+
